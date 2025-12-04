@@ -1,6 +1,22 @@
-[gd_scene load_steps=2 format=3 uid="uid://cew3cevt4ay60"]
+[gd_scene load_steps=5 format=3 uid="uid://cew3cevt4ay60"]
 
 [ext_resource type="Script" uid="uid://pef4w6w3t1s6" path="res://player.gd" id="1_4flbx"]
+[ext_resource type="Texture2D" uid="uid://cyhccw2c8nnpb" path="res://icon.svg" id="2_onrkg"]
+[ext_resource type="PackedScene" uid="uid://broexg0aje63j" path="res://CarryComponent.tscn" id="3_kne1u"]
 
-[node name="Player" type="Node2D"]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_i3pqv"]
+size = Vector2(85, 86)
+
+[node name="Player" type="CharacterBody2D"]
 script = ExtResource("1_4flbx")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(32.249996, 33.249996)
+scale = Vector2(0.65234375, 0.65234375)
+texture = ExtResource("2_onrkg")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(32.5, 34)
+shape = SubResource("RectangleShape2D_i3pqv")
+
+[node name="CarryComponent" parent="." instance=ExtResource("3_kne1u")]
