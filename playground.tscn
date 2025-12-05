@@ -1,12 +1,14 @@
 [gd_scene load_steps=3 format=3 uid="uid://bd3hxsa4ri8ms"]
 
 [ext_resource type="PackedScene" uid="uid://cew3cevt4ay60" path="res://Player.tscn" id="1_rupst"]
-[ext_resource type="PackedScene" uid="uid://bhog5dvw5fy8h" path="res://Item.tscn" id="2_wt17y"]
+[ext_resource type="PackedScene" uid="uid://bhog5dvw5fy8h" path="res://Test_Item.tscn" id="2_wt17y"]
 
 [node name="Playground" type="Node2D"]
 
 [node name="Player" parent="." instance=ExtResource("1_rupst")]
 position = Vector2(311, 150)
 
-[node name="Item" parent="." instance=ExtResource("2_wt17y")]
+[node name="Test_Item" parent="." instance=ExtResource("2_wt17y")]
 position = Vector2(443, 204)
+item_name = "Item de teste"
+is_pickable = true
