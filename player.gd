@@ -28,13 +28,8 @@ func _process(_delta: float) -> void:
 func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("ui_accept"):
 		
-		var test_item = BaseItem.new()
-		test_item.item_name = "Item de Teste"
-		test_item.is_pickable = true
+		carry_component.try_interact()
 		
-		if carry_component.picked_up_item(test_item):
-			print_debug("Player agora carrega: ", test_item.item_name)
-			
 	if event.is_action_pressed("ui_cancel"):  # ESC
 		carry_component.drop_item()
 	

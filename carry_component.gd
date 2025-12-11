@@ -1,38 +1,52 @@
 class_name CarryComponent
-extends Node
+extends Area2D
 
 signal item_picked_up(item: BaseItem)
 signal item_dropped(item: BaseItem)
-
-@export var pick_up_area : Area2D
+signal item_found(item: BaseItem)
+signal item_lost(item: BaseItem)
 
 var carried_item: BaseItem = null
 var is_carrying: bool = false
+var available_item: BaseItem = null
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	
-	if pick_up_area:
-		pick_up_area.area_entered.connect(_on_item_nearby)
-		pick_up_area.area_exited.connect(_on_item_far)
+	area_entered.connect(_on_item_nearby)
+	area_exited.connect(_on_item_far)
 	
 	pass # Replace with function body.
+	
+func try_interact() -> bool:
+	print_debug("Tentando interagir...")
+	
+	if is_carrying:
+		return drop_item()
+	elif available_item:
+		return try_carry(available_item)
+	else:
+		print_debug("Nenhum item próximo para interagir")
+		return false
 
-
-func picked_up_item(item: BaseItem) -> bool:
+func try_carry(item: BaseItem) -> bool:
+	
+	var types_list = BaseItem.ItemType
+	var item_type = item.get_item_type()
 	
 	if is_carrying:
 		print_debug("Já está carregando um item!")
-		return false
+		print_debug("Item será dropado")
+		return drop_item()
 	
-	if not item.is_pickable:
+	if item_type != types_list.CARRY || item.can_interact == false:
 		print_debug("Este item não pode ser pego!")
 		return false
 		
 	carried_item = item
 	is_carrying = true
 	
-	item.on_picked_up(get_parent())
+	item.on_carry(get_parent())
 	
 	item_picked_up.emit(item)
 	
@@ -54,16 +68,23 @@ func drop_item() -> bool:
 	carried_item = null
 	is_carrying = false
 	
-	
 	return true
 
-func _on_item_nearby(body: Node) -> void:
-	if body is BaseItem and body.is_pickable:
-		print_debug("Item próximo: ", body.item_name)
-	pass
+func _on_item_nearby(item: Area2D) -> void:
 	
-func _on_item_far(body: Node) -> void:
-	if body is BaseItem:
-		print_debug("Item afastou: ", body.item_name)
+	print_debug(item.item_name)
+	
+	if item is BaseItem and item.can_interact and item.get_item_type() == BaseItem.ItemType.CARRY:
+		available_item = item
+		item_found.emit(item)
+		print_debug("Item disponível para carregar: ", item.item_name)
+	
+func _on_item_far(item: Area2D) -> void:
+	
+	if item and item == available_item:
+		item_lost.emit(item)
+		available_item = null
+		print_debug("Item fora do alcance!: ", item.item_name)
+	
 	pass
 	

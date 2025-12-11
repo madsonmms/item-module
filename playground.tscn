@@ -1,14 +1,30 @@
-[gd_scene load_steps=3 format=3 uid="uid://bd3hxsa4ri8ms"]
+[gd_scene load_steps=6 format=3 uid="uid://bd3hxsa4ri8ms"]
 
 [ext_resource type="PackedScene" uid="uid://cew3cevt4ay60" path="res://Player.tscn" id="1_rupst"]
-[ext_resource type="PackedScene" uid="uid://bhog5dvw5fy8h" path="res://Test_Item.tscn" id="2_wt17y"]
+[ext_resource type="PackedScene" uid="uid://l2royxwcttg7" path="res://BaseItem.tscn" id="1_wt17y"]
+
+[sub_resource type="Gradient" id="Gradient_wt17y"]
+colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_m8u5f"]
+gradient = SubResource("Gradient_wt17y")
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_wt17y"]
+radius = 58.420887
 
 [node name="Playground" type="Node2D"]
 
-[node name="Player" parent="." instance=ExtResource("1_rupst")]
-position = Vector2(311, 150)
+[node name="BaseItem" parent="." instance=ExtResource("1_wt17y")]
+position = Vector2(169, 151)
+collision_layer = 4
+item_name = "Caixa"
 
-[node name="Test_Item" parent="." instance=ExtResource("2_wt17y")]
-position = Vector2(443, 204)
-item_name = "Item de teste"
-is_pickable = true
+[node name="Sprite2D" type="Sprite2D" parent="BaseItem"]
+scale = Vector2(1.28125, 1.28125)
+texture = SubResource("GradientTexture2D_m8u5f")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="BaseItem"]
+shape = SubResource("CircleShape2D_wt17y")
+
+[node name="Player" parent="." instance=ExtResource("1_rupst")]
+position = Vector2(405, 152)
