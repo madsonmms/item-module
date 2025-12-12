@@ -1,7 +1,7 @@
 class_name CarryComponent
 extends Area2D
 
-signal item_picked_up(item: BaseItem)
+signal item_carring(item: BaseItem)
 signal item_dropped(item: BaseItem)
 signal item_found(item: BaseItem)
 signal item_lost(item: BaseItem)
@@ -9,6 +9,11 @@ signal item_lost(item: BaseItem)
 var carried_item: BaseItem = null
 var is_carrying: bool = false
 var available_item: BaseItem = null
+var carry_offset: Vector2 = Vector2(0, -40)
+
+#Guarda o status original do item para resturar/referenciar
+var carried_item_original_parent: Node = null
+var carried_item_original_transform: Transform2D = Transform2D()
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -17,7 +22,12 @@ func _ready() -> void:
 	area_exited.connect(_on_item_far)
 	
 	pass # Replace with function body.
-	
+
+func _process(_delta: float) -> void:
+	if is_carrying and carried_item:
+		_update_carried_item_position()
+	pass
+
 func try_interact() -> bool:
 	print_debug("Tentando interagir...")
 	
@@ -31,27 +41,53 @@ func try_interact() -> bool:
 
 func try_carry(item: BaseItem) -> bool:
 	
+	#Guarda algumas informações do item
 	var types_list = BaseItem.ItemType
 	var item_type = item.get_item_type()
 	
+	#Se já estiver carregando o item, solta ele
 	if is_carrying:
 		print_debug("Já está carregando um item!")
 		print_debug("Item será dropado")
 		return drop_item()
 	
+	#Se o item não for do tipo Carry não faz nada
 	if item_type != types_list.CARRY || item.can_interact == false:
 		print_debug("Este item não pode ser pego!")
 		return false
-		
+	
+	#Variável para usos diversos:
+	#Checagens do componente, AnimationTreeStateMachine e etc...
 	carried_item = item
 	is_carrying = true
 	
-	item.on_carry(get_parent())
 	
-	item_picked_up.emit(item)
+	#Pega o CharacterBody que chamou o carry
+	var carrier = get_parent() as CharacterBody2D	
+	
+	#Referencia o pai do item para conseguir removê-lo
+	#Referencia o transform original do item para poder alterálo
+	carried_item_original_parent = item.get_parent()
+	carried_item_original_transform = item.global_transform
+	
+	#Remove o nó do item do lugar original e adiciona ao carrier
+	#Cria um posição fixa com base no carrier
+	carried_item_original_parent.remove_child(item)
+	carrier.add_child(item)
+	item.position = carry_offset
+	
+	#Executa função do item
+	item.on_carry(carrier)
+	
+	#Emite sinal de picked_up
+	item_carring.emit(item)
 	
 	print_debug("Carry Component reconhece o item: ", carried_item.item_name)
 	return true
+
+func _update_carried_item_position() -> void:
+	if carried_item:
+		carried_item.position = carry_offset
 
 func drop_item() -> bool:
 	
