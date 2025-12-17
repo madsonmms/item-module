@@ -21,16 +21,13 @@ func get_item_type() -> ItemType:
 	return item_type
 
 func _on_area_entered(body: Node) -> void:
-	print_debug(item_name, ": Player entrou na área de interação")
 	pass
 
 func _on_area_exited(body: Node) -> void:
-	print_debug(item_name, ": Player saiu da área de interação")
 	pass
 
 func on_carry(_carrier: CharacterBody2D) -> void:
-	print_debug(item_name, " executando função de ser pego...")
 	pass
 
 func on_dropped() -> void:
-	print_debug(item_name, " executando função de drop...")
+	pass

@@ -24,19 +24,21 @@ func _ready() -> void:
 	pass # Replace with function body.
 
 func _process(_delta: float) -> void:
+	
+	if carried_item:
+		print_debug(carried_item.global_position)
+	
 	if is_carrying and carried_item:
 		_update_carried_item_position()
 	pass
 
 func try_interact() -> bool:
-	print_debug("Tentando interagir...")
 	
 	if is_carrying:
 		return drop_item()
 	elif available_item:
 		return try_carry(available_item)
 	else:
-		print_debug("Nenhum item próximo para interagir")
 		return false
 
 func try_carry(item: BaseItem) -> bool:
@@ -47,13 +49,10 @@ func try_carry(item: BaseItem) -> bool:
 	
 	#Se já estiver carregando o item, solta ele
 	if is_carrying:
-		print_debug("Já está carregando um item!")
-		print_debug("Item será dropado")
 		return drop_item()
 	
 	#Se o item não for do tipo Carry não faz nada
 	if item_type != types_list.CARRY || item.can_interact == false:
-		print_debug("Este item não pode ser pego!")
 		return false
 	
 	#Variável para usos diversos:
@@ -66,7 +65,7 @@ func try_carry(item: BaseItem) -> bool:
 	var carrier = get_parent() as CharacterBody2D	
 	
 	#Referencia o pai do item para conseguir removê-lo
-	#Referencia o transform original do item para poder alterálo
+	#Referencia o transform original do item para poder alterá-lo
 	carried_item_original_parent = item.get_parent()
 	carried_item_original_transform = item.global_transform
 	
@@ -82,7 +81,6 @@ func try_carry(item: BaseItem) -> bool:
 	#Emite sinal de picked_up
 	item_carring.emit(item)
 	
-	print_debug("Carry Component reconhece o item: ", carried_item.item_name)
 	return true
 
 func _update_carried_item_position() -> void:
@@ -95,16 +93,35 @@ func drop_item() -> bool:
 		print_debug("Não está carregando nada!")
 		return false
 		
+	var carrier = get_parent() as CharacterBody2D
+	
+	carrier.remove_child(carried_item)
+	
+	var drop_position = _calculate_drop_position(carrier)
+	
+	get_tree().root.add_child(carried_item)
+	carried_item.global_position = drop_position
+	
 	carried_item.on_dropped()
 	
+	item_dropped.emit(carried_item)
 	print_debug(carried_item.item_name, " largado!")
 	
-	item_dropped.emit(carried_item)
+	 # 3. Reativa a Area2D do item
+	carried_item.monitoring = true
+	carried_item.monitorable = true
 	
 	carried_item = null
 	is_carrying = false
+	carried_item_original_parent = null
+	carried_item_original_transform = Transform2D()
 	
 	return true
+
+func _calculate_drop_position(carrier: CharacterBody2D) -> Vector2:
+	var drop_offset: Vector2 = Vector2(0, 20)
+	return carrier.global_position + drop_offset
+	
 
 func _on_item_nearby(item: Area2D) -> void:
 	
