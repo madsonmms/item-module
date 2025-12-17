@@ -6,9 +6,9 @@ signal item_dropped(item: BaseItem)
 signal item_found(item: BaseItem)
 signal item_lost(item: BaseItem)
 
+var available_item: BaseItem = null
 var carried_item: BaseItem = null
 var is_carrying: bool = false
-var available_item: BaseItem = null
 var carry_offset: Vector2 = Vector2(0, -40)
 
 #Guarda o status original do item para resturar/referenciar
@@ -24,22 +24,30 @@ func _ready() -> void:
 	pass # Replace with function body.
 
 func _process(_delta: float) -> void:
-	
-	if carried_item:
-		print_debug(carried_item.global_position)
-	
 	if is_carrying and carried_item:
 		_update_carried_item_position()
 	pass
 
 func try_interact() -> bool:
 	
-	if is_carrying:
-		return drop_item()
-	elif available_item:
-		return try_carry(available_item)
-	else:
+	if not available_item:
 		return false
+	
+	match available_item.get_item_type():
+		BaseItem.ItemType.CARRY:
+			if is_carrying:
+				return drop_item()
+			elif available_item:
+				return try_carry(available_item)
+		
+		BaseItem.ItemType.INTERACT:
+			return _handle_interact(available_item)
+		
+		BaseItem.ItemType.PICKUP:
+			return _handle_pickup(available_item)
+	
+	return false
+	
 
 func try_carry(item: BaseItem) -> bool:
 	
@@ -125,7 +133,6 @@ func _calculate_drop_position(carrier: CharacterBody2D) -> Vector2:
 
 func _on_item_nearby(body: Area2D) -> void:
 	var item = body as BaseItem
-	var item_type = BaseItem.ItemType
 	
 	#Checagem de interação
 	if not item or not item.can_interact:
@@ -142,3 +149,10 @@ func _on_item_far(item: Area2D) -> void:
 	
 	pass
 	
+func _handle_interact(available_item: BaseItem) -> bool:
+	print_debug("Interagindo...")
+	return true
+	
+func _handle_pickup(available_item: BaseItem) -> bool:
+	print_debug("Pegando item...")
+	return true
