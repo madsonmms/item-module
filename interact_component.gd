@@ -123,21 +123,22 @@ func _calculate_drop_position(carrier: CharacterBody2D) -> Vector2:
 	return carrier.global_position + drop_offset
 	
 
-func _on_item_nearby(item: Area2D) -> void:
+func _on_item_nearby(body: Area2D) -> void:
+	var item = body as BaseItem
+	var item_type = BaseItem.ItemType
 	
-	print_debug(item.item_name)
+	#Checagem de interação
+	if not item or not item.can_interact:
+		return
 	
-	if item is BaseItem and item.can_interact and item.get_item_type() == BaseItem.ItemType.CARRY:
-		available_item = item
-		item_found.emit(item)
-		print_debug("Item disponível para carregar: ", item.item_name)
+	available_item = item
+	item_found.emit(item)
 	
 func _on_item_far(item: Area2D) -> void:
 	
 	if item and item == available_item:
 		item_lost.emit(item)
 		available_item = null
-		print_debug("Item fora do alcance!: ", item.item_name)
 	
 	pass
 	
