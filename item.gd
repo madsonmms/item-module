@@ -3,6 +3,7 @@ extends Node2D
 
 enum ItemType {CARRY, PICKUP, INTERACT, PROP}
 @export var item_type: ItemType = ItemType.INTERACT
+@export var item_interaction: ItemInteraction
 
 func _ready() -> void:
 	pass # Replace with function body.

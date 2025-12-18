@@ -35,7 +35,7 @@ func try_interact() -> bool:
 	
 	if not available_item:
 		return false
-	
+		
 	match available_item.get_item_type():
 		available_item.ItemType.CARRY:
 			if is_carrying:
@@ -52,15 +52,15 @@ func try_interact() -> bool:
 	return false
 	
 
-func try_carry(item: Item) -> bool:
+func try_carry(item: Node2D) -> bool:
 	
-	var types_list = Item.ItemType
+	var types_list = item.ItemType
 	var item_type = item.get_item_type()
 	
 	if is_carrying:
 		return drop_item()
 	
-	if item_type != types_list.CARRY || item.active == false:
+	if item_type != types_list.CARRY || item.item_interaction.active == false:
 		return false
 	
 	actor = get_parent()
@@ -102,8 +102,6 @@ func drop_item() -> bool:
 	
 	#item_dropped.emit(carried_item)
 	
-	print_debug(carried_item)
-	
 	carried_item.monitoring = true
 	carried_item.monitorable = true
 	
@@ -120,17 +118,17 @@ func _calculate_drop_position(carrier: CharacterBody2D) -> Vector2:
 	
 
 func _on_item_nearby(body: Node2D) -> void:
-	var item = body as Item
+	var item = body.get_parent() as Item
 	
 	#Checagem de item existente e interação
-	if not item or not item.active:
+	if not item or not item.item_interaction.active:
 		return
-	
+		
 	available_item = item
 	
-	#item_found.emit(item)
+func _on_item_far(body: Node2D) -> void:
 	
-func _on_item_far(item: Area2D) -> void:
+	var item = body.get_parent() as Item
 	
 	if item and item == available_item:
 		#item_lost.emit(item)

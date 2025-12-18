@@ -1,6 +1,6 @@
 [gd_scene load_steps=8 format=3 uid="uid://bd3hxsa4ri8ms"]
 
-[ext_resource type="PackedScene" uid="uid://cdxigk32e1ky2" path="res://Player.tscn" id="1_rupst"]
+[ext_resource type="PackedScene" uid="uid://pd2pr7bui32g" path="res://Player.tscn" id="1_rupst"]
 [ext_resource type="PackedScene" uid="uid://l2royxwcttg7" path="res://ItemInteraction.tscn" id="1_wt17y"]
 [ext_resource type="Script" uid="uid://ppb4pfkmxbom" path="res://caixa.gd" id="2_m8u5f"]
 
@@ -21,18 +21,21 @@ size = Vector2(84, 84)
 [node name="Player" parent="." groups=["Player"] instance=ExtResource("1_rupst")]
 position = Vector2(315, 152)
 
-[node name="Caixa" type="Node2D" parent="."]
+[node name="Caixa" type="Node2D" parent="." node_paths=PackedStringArray("item_interaction")]
 script = ExtResource("2_m8u5f")
 item_type = 0
+item_interaction = NodePath("ItemInteraction")
 
 [node name="Sprite2D" type="Sprite2D" parent="Caixa"]
 position = Vector2(169, 151)
 scale = Vector2(1.28125, 1.28125)
 texture = SubResource("GradientTexture2D_m8u5f")
 
-[node name="ItemInteraction" parent="Caixa" instance=ExtResource("1_wt17y")]
+[node name="ItemInteraction" parent="Caixa" node_paths=PackedStringArray("interaction_label") instance=ExtResource("1_wt17y")]
 position = Vector2(169, 151)
 collision_layer = 4
+monitoring = false
+interaction_label = NodePath("Label")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Caixa/ItemInteraction"]
 shape = SubResource("CircleShape2D_wt17y")
