@@ -1,31 +1,30 @@
-class_name CarryComponent
+class_name InteractComponent
 extends Area2D
 
 #Sinais para uso futuro para animações, sons, etc...
-#signal item_carring(item: BaseItem)
-#signal item_dropped(item: BaseItem)
-#signal item_found(item: BaseItem)
-#signal item_lost(item: BaseItem)
+signal item_interaction(item: Item)
+#signal item_carring(item: Item)
+#signal item_dropped(item: ItemInteraction)
+#signal item_found(item: ItemInteraction)
+#signal item_lost(item: ItemInteraction)
 
-signal item_interact(item: BaseItem)
-signal item_pickup(item: BaseItem)
-
-var available_item: BaseItem = null
-var carried_item: BaseItem = null
+var available_item: Item = null
+var carried_item: Item = null
 var is_carrying: bool = false
 var carry_offset: Vector2 = Vector2(0, -40)
+
+var actor: CharacterBody2D
 
 #Guarda o status original do item para resturar/referenciar
 var carried_item_original_parent: Node = null
 var carried_item_original_transform: Transform2D = Transform2D()
 
-# Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	
 	area_entered.connect(_on_item_nearby)
 	area_exited.connect(_on_item_far)
 	
-	pass # Replace with function body.
+	pass
 
 func _process(_delta: float) -> void:
 	if is_carrying and carried_item:
@@ -38,57 +37,43 @@ func try_interact() -> bool:
 		return false
 	
 	match available_item.get_item_type():
-		BaseItem.ItemType.CARRY:
+		available_item.ItemType.CARRY:
 			if is_carrying:
 				return drop_item()
 			elif available_item:
 				return try_carry(available_item)
 		
-		BaseItem.ItemType.INTERACT:
+		available_item.ItemType.INTERACT:
 			return _handle_interact(available_item)
 		
-		BaseItem.ItemType.PICKUP:
+		available_item.ItemType.PICKUP:
 			return _handle_pickup(available_item)
 	
 	return false
 	
 
-func try_carry(item: BaseItem) -> bool:
+func try_carry(item: Item) -> bool:
 	
-	#Guarda algumas informações do item
-	var types_list = BaseItem.ItemType
+	var types_list = Item.ItemType
 	var item_type = item.get_item_type()
 	
-	#Se já estiver carregando o item, solta ele
 	if is_carrying:
 		return drop_item()
 	
-	#Se o item não for do tipo Carry não faz nada
-	if item_type != types_list.CARRY || item.can_interact == false:
+	if item_type != types_list.CARRY || item.active == false:
 		return false
 	
-	#Variável para usos diversos:
-	#Checagens do componente, AnimationTreeStateMachine e etc...
+	actor = get_parent()
+	
 	carried_item = item
 	is_carrying = true
 	
-	
-	#Pega o CharacterBody que chamou o carry
-	var carrier = get_parent() as CharacterBody2D	
-	
-	#Referencia o pai do item para conseguir removê-lo
-	#Referencia o transform original do item para poder alterá-lo
 	carried_item_original_parent = item.get_parent()
 	carried_item_original_transform = item.global_transform
 	
-	#Remove o nó do item do lugar original e adiciona ao carrier
-	#Cria um posição fixa com base no carrier
 	carried_item_original_parent.remove_child(item)
-	carrier.add_child(item)
+	actor.add_child(item)
 	item.position = carry_offset
-	
-	#Executa função do item
-	item.on_carry(carrier)
 	
 	#item_carring.emit(item)
 	
@@ -104,11 +89,11 @@ func drop_item() -> bool:
 		print_debug("Não está carregando nada!")
 		return false
 		
-	var carrier = get_parent() as CharacterBody2D
+	actor = get_parent()
 	
-	carrier.remove_child(carried_item)
+	actor.remove_child(carried_item)
 	
-	var drop_position = _calculate_drop_position(carrier)
+	var drop_position = _calculate_drop_position(actor)
 	
 	get_tree().root.add_child(carried_item)
 	carried_item.global_position = drop_position
@@ -116,6 +101,8 @@ func drop_item() -> bool:
 	carried_item.on_dropped()
 	
 	#item_dropped.emit(carried_item)
+	
+	print_debug(carried_item)
 	
 	carried_item.monitoring = true
 	carried_item.monitorable = true
@@ -132,11 +119,11 @@ func _calculate_drop_position(carrier: CharacterBody2D) -> Vector2:
 	return carrier.global_position + drop_offset
 	
 
-func _on_item_nearby(body: Area2D) -> void:
-	var item = body as BaseItem
+func _on_item_nearby(body: Node2D) -> void:
+	var item = body as Item
 	
 	#Checagem de item existente e interação
-	if not item or not item.can_interact:
+	if not item or not item.active:
 		return
 	
 	available_item = item
@@ -151,10 +138,10 @@ func _on_item_far(item: Area2D) -> void:
 	
 	pass
 	
-func _handle_interact(item: BaseItem) -> bool:
-	item_interact.emit(item)
+func _handle_interact(item: Item) -> bool:
+	item_interaction.emit()
 	return true
 	
-func _handle_pickup(item: BaseItem) -> bool:
+func _handle_pickup(item: Item) -> bool:
 	print_debug("Pegando item ", item)
 	return true

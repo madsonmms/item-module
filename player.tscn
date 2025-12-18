@@ -1,4 +1,4 @@
-[gd_scene load_steps=6 format=3 uid="uid://cew3cevt4ay60"]
+[gd_scene load_steps=6 format=3 uid="uid://pd2pr7bui32g"]
 
 [ext_resource type="Script" uid="uid://pef4w6w3t1s6" path="res://player.gd" id="1_4flbx"]
 [ext_resource type="Texture2D" uid="uid://cyhccw2c8nnpb" path="res://icon.svg" id="2_onrkg"]
@@ -10,6 +10,7 @@ size = Vector2(85, 86)
 [sub_resource type="CircleShape2D" id="CircleShape2D_kne1u"]
 
 [node name="Player" type="CharacterBody2D"]
+collision_mask = 9
 script = ExtResource("1_4flbx")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
@@ -19,8 +20,8 @@ texture = ExtResource("2_onrkg")
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("RectangleShape2D_i3pqv")
 
-[node name="CarryComponent" parent="." instance=ExtResource("3_kne1u")]
+[node name="InteractComponent" parent="." instance=ExtResource("3_kne1u")]
 collision_mask = 4
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="CarryComponent"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="InteractComponent"]
 shape = SubResource("CircleShape2D_kne1u")

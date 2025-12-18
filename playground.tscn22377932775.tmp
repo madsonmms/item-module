@@ -1,8 +1,8 @@
 [gd_scene load_steps=8 format=3 uid="uid://bd3hxsa4ri8ms"]
 
-[ext_resource type="PackedScene" uid="uid://cdxigk32e1ky2" path="res://Player.tscn" id="1_rupst"]
-[ext_resource type="PackedScene" uid="uid://l2royxwcttg7" path="res://ItemInteraction.tscn" id="1_wt17y"]
-[ext_resource type="Script" uid="uid://ppb4pfkmxbom" path="res://caixa.gd" id="2_m8u5f"]
+[ext_resource type="Script" uid="uid://dkh1m2dh54hy8" path="res://base_item.gd" id="1_m8u5f"]
+[ext_resource type="PackedScene" uid="uid://cdxigk32e1ky2" path="res://player.tscn" id="1_rupst"]
+[ext_resource type="PackedScene" uid="uid://l2royxwcttg7" path="res://BaseItem.tscn" id="1_wt17y"]
 
 [sub_resource type="Gradient" id="Gradient_wt17y"]
 colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 1)
@@ -18,26 +18,25 @@ size = Vector2(84, 84)
 
 [node name="Playground" type="Node2D"]
 
-[node name="Player" parent="." groups=["Player"] instance=ExtResource("1_rupst")]
-position = Vector2(315, 152)
-
-[node name="Caixa" type="Node2D" parent="."]
-script = ExtResource("2_m8u5f")
+[node name="Caixa" type="Node2D" parent="." node_paths=PackedStringArray("interaction_label")]
+script = ExtResource("1_m8u5f")
 item_type = 0
+interaction_label = NodePath("ItemLogic/Label")
 
 [node name="Sprite2D" type="Sprite2D" parent="Caixa"]
 position = Vector2(169, 151)
 scale = Vector2(1.28125, 1.28125)
 texture = SubResource("GradientTexture2D_m8u5f")
 
-[node name="ItemInteraction" parent="Caixa" instance=ExtResource("1_wt17y")]
+[node name="ItemLogic" parent="Caixa" instance=ExtResource("1_wt17y")]
 position = Vector2(169, 151)
 collision_layer = 4
+script = null
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Caixa/ItemInteraction"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Caixa/ItemLogic"]
 shape = SubResource("CircleShape2D_wt17y")
 
-[node name="Label" type="Label" parent="Caixa/ItemInteraction"]
+[node name="Label" type="Label" parent="Caixa/ItemLogic"]
 visible = false
 offset_left = -11.0
 offset_top = -85.0
@@ -51,3 +50,6 @@ text = "[E]"
 position = Vector2(169, 151)
 shape = SubResource("RectangleShape2D_wt17y")
 debug_color = Color(0.7904799, 0.09155921, 0.99999994, 0.41960785)
+
+[node name="Player" parent="." groups=["Player"] instance=ExtResource("1_rupst")]
+position = Vector2(315, 152)

@@ -3,7 +3,7 @@ extends CharacterBody2D
 
 var move_speed: float = 100.00
 
-@onready var carry_component = $CarryComponent
+@onready var interact_component = $InteractComponent
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -27,10 +27,10 @@ func _process(_delta: float) -> void:
 func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("interact"):
 		
-		carry_component.try_interact()
+		interact_component.try_interact()
 		
 	if event.is_action_pressed("ui_cancel"):  # ESC
-		carry_component.drop_item()
+		interact_component.drop_item()
 	
 	pass
 	
