@@ -1,10 +1,14 @@
 class_name CarryComponent
 extends Area2D
 
-signal item_carring(item: BaseItem)
-signal item_dropped(item: BaseItem)
-signal item_found(item: BaseItem)
-signal item_lost(item: BaseItem)
+#Sinais para uso futuro para animações, sons, etc...
+#signal item_carring(item: BaseItem)
+#signal item_dropped(item: BaseItem)
+#signal item_found(item: BaseItem)
+#signal item_lost(item: BaseItem)
+
+signal item_interact(item: BaseItem)
+signal item_pickup(item: BaseItem)
 
 var available_item: BaseItem = null
 var carried_item: BaseItem = null
@@ -86,8 +90,7 @@ func try_carry(item: BaseItem) -> bool:
 	#Executa função do item
 	item.on_carry(carrier)
 	
-	#Emite sinal de picked_up
-	item_carring.emit(item)
+	#item_carring.emit(item)
 	
 	return true
 
@@ -112,10 +115,8 @@ func drop_item() -> bool:
 	
 	carried_item.on_dropped()
 	
-	item_dropped.emit(carried_item)
-	print_debug(carried_item.item_name, " largado!")
+	#item_dropped.emit(carried_item)
 	
-	 # 3. Reativa a Area2D do item
 	carried_item.monitoring = true
 	carried_item.monitorable = true
 	
@@ -134,25 +135,26 @@ func _calculate_drop_position(carrier: CharacterBody2D) -> Vector2:
 func _on_item_nearby(body: Area2D) -> void:
 	var item = body as BaseItem
 	
-	#Checagem de interação
+	#Checagem de item existente e interação
 	if not item or not item.can_interact:
 		return
 	
 	available_item = item
-	item_found.emit(item)
+	
+	#item_found.emit(item)
 	
 func _on_item_far(item: Area2D) -> void:
 	
 	if item and item == available_item:
-		item_lost.emit(item)
+		#item_lost.emit(item)
 		available_item = null
 	
 	pass
 	
-func _handle_interact(available_item: BaseItem) -> bool:
-	print_debug("Interagindo...")
+func _handle_interact(item: BaseItem) -> bool:
+	item_interact.emit(item)
 	return true
 	
-func _handle_pickup(available_item: BaseItem) -> bool:
-	print_debug("Pegando item...")
+func _handle_pickup(item: BaseItem) -> bool:
+	print_debug("Pegando item ", item)
 	return true

@@ -16,7 +16,7 @@ func _ready() -> void:
 	area_entered.connect(_on_area_entered)
 	area_exited.connect(_on_area_exited)
 	
-	pass # Replace with function body.
+	pass
 	
 func get_item_type() -> ItemType:
 	return item_type
@@ -40,7 +40,7 @@ func on_dropped() -> void:
 	pass
 
 func _show_interaction_label() -> void:
-	print_debug(interaction_label)
+	
 	if interaction_label:
 		interaction_label.visible = true
 		
