@@ -1,56 +1,15 @@
-[gd_scene load_steps=8 format=3 uid="uid://bd3hxsa4ri8ms"]
+[gd_scene load_steps=3 format=3 uid="uid://bd3hxsa4ri8ms"]
 
-[ext_resource type="PackedScene" uid="uid://pd2pr7bui32g" path="res://Player.tscn" id="1_rupst"]
-[ext_resource type="PackedScene" uid="uid://l2royxwcttg7" path="res://ItemInteraction.tscn" id="1_wt17y"]
-[ext_resource type="Script" uid="uid://ppb4pfkmxbom" path="res://caixa.gd" id="2_m8u5f"]
-
-[sub_resource type="Gradient" id="Gradient_wt17y"]
-colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 1)
-
-[sub_resource type="GradientTexture2D" id="GradientTexture2D_m8u5f"]
-gradient = SubResource("Gradient_wt17y")
-
-[sub_resource type="CircleShape2D" id="CircleShape2D_wt17y"]
-radius = 103.23759
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_wt17y"]
-size = Vector2(84, 84)
+[ext_resource type="PackedScene" uid="uid://pd2pr7bui32g" path="res://player.tscn" id="1_rupst"]
+[ext_resource type="PackedScene" uid="uid://dh0v6rvbe8iua" path="res://Caixa.tscn" id="2_wt17y"]
 
 [node name="Playground" type="Node2D"]
 
 [node name="Player" parent="." groups=["Player"] instance=ExtResource("1_rupst")]
 position = Vector2(315, 152)
+collision_mask = 12
 
-[node name="Caixa" type="Node2D" parent="." node_paths=PackedStringArray("item_interaction")]
-script = ExtResource("2_m8u5f")
-item_type = 0
-item_interaction = NodePath("ItemInteraction")
-
-[node name="Sprite2D" type="Sprite2D" parent="Caixa"]
-position = Vector2(169, 151)
-scale = Vector2(1.28125, 1.28125)
-texture = SubResource("GradientTexture2D_m8u5f")
-
-[node name="ItemInteraction" parent="Caixa" node_paths=PackedStringArray("interaction_label") instance=ExtResource("1_wt17y")]
-position = Vector2(169, 151)
+[node name="Caixa" parent="." instance=ExtResource("2_wt17y")]
+position = Vector2(198, 150)
 collision_layer = 4
-monitoring = false
-interaction_label = NodePath("Label")
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Caixa/ItemInteraction"]
-shape = SubResource("CircleShape2D_wt17y")
-
-[node name="Label" type="Label" parent="Caixa/ItemInteraction"]
-visible = false
-offset_left = -11.0
-offset_top = -85.0
-offset_right = 29.0
-offset_bottom = -62.0
-text = "[E]"
-
-[node name="StaticBody2D" type="StaticBody2D" parent="Caixa"]
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Caixa/StaticBody2D"]
-position = Vector2(169, 151)
-shape = SubResource("RectangleShape2D_wt17y")
-debug_color = Color(0.7904799, 0.09155921, 0.99999994, 0.41960785)
+collision_mask = 1

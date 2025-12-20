@@ -8,14 +8,16 @@ signal item_interaction(item: Item)
 #signal item_found(item: ItemInteraction)
 #signal item_lost(item: ItemInteraction)
 
+@export var carry_point: Marker2D
+
 var available_item: Item = null
 var carried_item: Item = null
 var is_carrying: bool = false
-var carry_offset: Vector2 = Vector2(0, -40)
+var carry_offset: Vector2 = Vector2(0, 0)
 
 var actor: CharacterBody2D
 
-#Guarda o status original do item para resturar/referenciar
+#Guarda o status original do item para resturar o item
 var carried_item_original_parent: Node = null
 var carried_item_original_transform: Transform2D = Transform2D()
 
@@ -24,11 +26,13 @@ func _ready() -> void:
 	area_entered.connect(_on_item_nearby)
 	area_exited.connect(_on_item_far)
 	
+	print_debug(carried_item_original_transform)
+	
 	pass
 
 func _process(_delta: float) -> void:
-	if is_carrying and carried_item:
-		_update_carried_item_position()
+	#if is_carrying and carried_item:
+		#_update_carried_item_position()
 	pass
 
 func try_interact() -> bool:
@@ -52,7 +56,7 @@ func try_interact() -> bool:
 	return false
 	
 
-func try_carry(item: Node2D) -> bool:
+func try_carry(item: Item) -> bool:
 	
 	var types_list = item.ItemType
 	var item_type = item.get_item_type()
@@ -68,20 +72,18 @@ func try_carry(item: Node2D) -> bool:
 	carried_item = item
 	is_carrying = true
 	
-	carried_item_original_parent = item.get_parent()
-	carried_item_original_transform = item.global_transform
+	carried_item.freeze = true
+	carried_item.reparent(carry_point)
+	carried_item.position = Vector2.ZERO
 	
-	carried_item_original_parent.remove_child(item)
-	actor.add_child(item)
-	item.position = carry_offset
 	
 	#item_carring.emit(item)
 	
 	return true
 
-func _update_carried_item_position() -> void:
-	if carried_item:
-		carried_item.position = carry_offset
+#func _update_carried_item_position() -> void:
+	#if carried_item:
+		#carried_item.global_position = carry_point.global_position
 
 func drop_item() -> bool:
 	
