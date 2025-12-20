@@ -15,13 +15,14 @@ radius = 103.23759
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_vlhcn"]
 size = Vector2(82, 82)
 
-[node name="Caixa" type="RigidBody2D" node_paths=PackedStringArray("item_interaction")]
+[node name="Caixa" type="RigidBody2D" node_paths=PackedStringArray("item_interaction", "collision")]
 collision_layer = 8
 collision_mask = 0
 gravity_scale = 0.0
 script = ExtResource("1_vlhcn")
 item_type = 0
 item_interaction = NodePath("ItemInteraction")
+collision = NodePath("CollisionShape2D")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 scale = Vector2(1.28125, 1.28125)

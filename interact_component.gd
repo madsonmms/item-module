@@ -76,6 +76,7 @@ func try_carry(item: Item) -> bool:
 	carried_item.reparent(carry_point)
 	carried_item.position = Vector2.ZERO
 	
+	carried_item.collision.disabled = true
 	
 	#item_carring.emit(item)
 	
@@ -93,19 +94,22 @@ func drop_item() -> bool:
 		
 	actor = get_parent()
 	
-	actor.remove_child(carried_item)
+	print_debug(carried_item.get_parent())
+	
+	actor.interact_component.carry_point.remove_child(carried_item)
 	
 	var drop_position = _calculate_drop_position(actor)
+	
+	print_debug(carried_item.get_parent())
 	
 	get_tree().root.add_child(carried_item)
 	carried_item.global_position = drop_position
 	
+	print_debug(carried_item.get_parent())
+	
 	carried_item.on_dropped()
 	
 	#item_dropped.emit(carried_item)
-	
-	carried_item.monitoring = true
-	carried_item.monitorable = true
 	
 	carried_item = null
 	is_carrying = false
