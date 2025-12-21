@@ -3,7 +3,7 @@ extends Area2D
 
 #Sinais para uso futuro para animações, sons, etc...
 signal item_interaction(item: Item)
-#signal item_carring(item: Item)
+signal item_carring(actor: CharacterBody2D)
 #signal item_dropped(item: ItemInteraction)
 #signal item_found(item: ItemInteraction)
 #signal item_lost(item: ItemInteraction)
@@ -25,8 +25,6 @@ func _ready() -> void:
 	
 	area_entered.connect(_on_item_nearby)
 	area_exited.connect(_on_item_far)
-	
-	print_debug(carried_item_original_transform)
 	
 	pass
 
@@ -69,16 +67,16 @@ func try_carry(item: Item) -> bool:
 	
 	actor = get_parent()
 	
-	carried_item = item
 	is_carrying = true
 	
-	carried_item.freeze = true
-	carried_item.reparent(carry_point)
-	carried_item.position = Vector2.ZERO
+	item.freeze = true
+	item.reparent(carry_point)
+	item.on_interact(actor)
+	item.position = Vector2.ZERO
 	
-	carried_item.collision.disabled = true
+	item.collision.disabled = true
 	
-	#item_carring.emit(item)
+	item_carring.emit(actor)
 	
 	return true
 
@@ -100,12 +98,8 @@ func drop_item() -> bool:
 	
 	var drop_position = _calculate_drop_position(actor)
 	
-	print_debug(carried_item.get_parent())
-	
 	get_tree().root.add_child(carried_item)
 	carried_item.global_position = drop_position
-	
-	print_debug(carried_item.get_parent())
 	
 	carried_item.on_dropped()
 	

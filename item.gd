@@ -7,8 +7,8 @@ enum ItemType {CARRY, PICKUP, INTERACT, PROP}
 @export var collision: CollisionShape2D
 
 func _ready() -> void:
-	pass # Replace with function body.
-
+	pass 
+	
 func get_item_type() -> ItemType:
 	return item_type
 
