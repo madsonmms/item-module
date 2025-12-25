@@ -32,7 +32,11 @@ func _hide_interaction_label() -> void:
 		interaction_label.visible = false
 
 func _on_area_entered(interaction_component: Node) -> void:
+	
+	print_debug(interaction_component)
+	
 	var body = interaction_component.get_parent()
+	
 	if body.is_in_group("Player") and active:
 		_show_interaction_label()	
 	pass

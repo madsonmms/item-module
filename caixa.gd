@@ -1,7 +1,6 @@
 extends Item
 
 func _ready() -> void:
-	
 	pass
 
 func get_item_type() -> ItemType:

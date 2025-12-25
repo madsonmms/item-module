@@ -4,7 +4,7 @@ extends Area2D
 #Sinais para uso futuro para animações, sons, etc...
 signal item_interaction(item: Item)
 signal item_carring(actor: CharacterBody2D)
-#signal item_dropped(item: ItemInteraction)
+signal item_dropped(item: ItemInteraction)
 #signal item_found(item: ItemInteraction)
 #signal item_lost(item: ItemInteraction)
 
@@ -76,13 +76,12 @@ func try_carry(item: Item) -> bool:
 	
 	item.collision.disabled = true
 	
+	carried_item = item
+	
 	item_carring.emit(actor)
 	
 	return true
 
-#func _update_carried_item_position() -> void:
-	#if carried_item:
-		#carried_item.global_position = carry_point.global_position
 
 func drop_item() -> bool:
 	
@@ -92,7 +91,8 @@ func drop_item() -> bool:
 		
 	actor = get_parent()
 	
-	print_debug(carried_item.get_parent())
+	print_debug(actor.interact_component.carry_point.get_children())
+	print_debug(carried_item)
 	
 	actor.interact_component.carry_point.remove_child(carried_item)
 	
@@ -103,7 +103,10 @@ func drop_item() -> bool:
 	
 	carried_item.on_dropped()
 	
-	#item_dropped.emit(carried_item)
+	carried_item.freeze = false
+	carried_item.collision.disabled = false
+	
+	item_dropped.emit(carried_item)
 	
 	carried_item = null
 	is_carrying = false
@@ -120,7 +123,6 @@ func _calculate_drop_position(carrier: CharacterBody2D) -> Vector2:
 func _on_item_nearby(body: Node2D) -> void:
 	var item = body.get_parent() as Item
 	
-	#Checagem de item existente e interação
 	if not item or not item.item_interaction.active:
 		return
 		
