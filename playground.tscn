@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://bd3hxsa4ri8ms"]
 
 [ext_resource type="PackedScene" uid="uid://dd3a3bv82gp6h" path="res://player.tscn" id="1_rupst"]
-[ext_resource type="PackedScene" uid="uid://dh0v6rvbe8iua" path="res://Caixa.tscn" id="2_wt17y"]
+[ext_resource type="PackedScene" uid="uid://dh0v6rvbe8iua" path="res://Itens/Caixa/Caixa.tscn" id="2_wt17y"]
 
 [node name="Playground" type="Node2D"]
 

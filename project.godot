@@ -10,7 +10,7 @@ config_version=5
 
 [application]
 
-config/name="Inventory Module"
+config/name="Hands Module"
 run/main_scene="uid://bd3hxsa4ri8ms"
 config/features=PackedStringArray("4.5", "GL Compatibility")
 config/icon="res://icon.svg"

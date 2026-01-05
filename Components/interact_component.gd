@@ -35,7 +35,6 @@ func try_interact() -> bool:
 	if success:
 		interaction_completed.emit(available_item)
 	
-	
 	return success
 	
 
@@ -114,7 +113,7 @@ func _calculate_drop_position(carrier: CharacterBody2D) -> Vector2:
 func _on_item_nearby(body: Node2D) -> void:
 	var item = body.get_parent() as Item
 	
-	if not item or not item.interaction_area.active:
+	if not item or not item.is_interactable:
 		return
 		
 	available_item = item

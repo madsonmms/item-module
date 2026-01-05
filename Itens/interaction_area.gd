@@ -2,10 +2,10 @@ class_name InteractionArea
 extends Area2D
 
 @export_group("Interaction Configuration")
-@export var active: bool = true
-@export var interaction_label: Label
+@export var interaction_label: Label # For debug and stuff
 
-# Called when the node enters the scene tree for the first time.
+@onready var parent = get_parent()
+
 func _ready() -> void:
 	
 	area_entered.connect(_on_area_entered)
@@ -17,13 +17,14 @@ func _on_area_entered(interaction_component: Node) -> void:
 	
 	var body = interaction_component.get_parent()
 	
-	if body.is_in_group("Player") and active:
-		_show_interaction_label()
+	if body.is_in_group("Player") and parent.is_interactable:
+		if interaction_label:
+			_show_interaction_label()
 	pass
 
 func _on_area_exited(interaction_component: Node) -> void:
 	var body = interaction_component.get_parent()
-	if body.is_in_group("Player") and active:
+	if body.is_in_group("Player") and parent.is_interactable:
 		_hide_interaction_label()
 	pass
 

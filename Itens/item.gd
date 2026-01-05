@@ -3,6 +3,7 @@ extends Node2D
 
 enum ItemType {CARRY, PICKUP, INTERACT, PROP}
 @export var item_type: ItemType = ItemType.INTERACT
+@export var is_interactable : bool = true
 @export var interaction_area: InteractionArea
 @export var collision: CollisionShape2D
 
@@ -32,3 +33,8 @@ func _on_carry_started(_carrier: CharacterBody2D) -> void:
 	
 func _on_drop_started(_carrier: CharacterBody2D) -> void:
 	push_warning("_on_drop_started() não implementado em: ", name)
+
+
+# CONFIGURATION #
+func set_interactable(value: bool) -> void:
+	is_interactable = value
