@@ -29,8 +29,8 @@ func _input(event: InputEvent) -> void:
 		
 		interact_component.try_interact()
 		
-	if event.is_action_pressed("ui_cancel"):  # ESC
-		interact_component.drop_item()
+	#if event.is_action_pressed("ui_cancel"):  # ESC
+		#interact_component.drop_item()
 	
 	pass
 	
