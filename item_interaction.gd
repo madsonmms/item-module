@@ -1,11 +1,9 @@
-class_name ItemInteraction
+class_name InteractionArea
 extends Area2D
 
 @export_group("Interaction Configuration")
-#enum ItemType {CARRY, PICKUP, INTERACT, PROP}
-#@export var item_type: ItemType = ItemType.INTERACT
 @export var active: bool = true
-@export var interaction_label: Label #Para debug
+@export var interaction_label: Label
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -14,9 +12,20 @@ func _ready() -> void:
 	area_exited.connect(_on_area_exited)
 	
 	pass
+
+func _on_area_entered(interaction_component: Node) -> void:
 	
-#func get_item_type() -> ItemType:
-	#return item_type
+	var body = interaction_component.get_parent()
+	
+	if body.is_in_group("Player") and active:
+		_show_interaction_label()
+	pass
+
+func _on_area_exited(interaction_component: Node) -> void:
+	var body = interaction_component.get_parent()
+	if body.is_in_group("Player") and active:
+		_hide_interaction_label()
+	pass
 
 func _show_interaction_label() -> void:
 	
@@ -30,22 +39,6 @@ func _show_interaction_label() -> void:
 func _hide_interaction_label() -> void:
 	if interaction_label:
 		interaction_label.visible = false
-
-func _on_area_entered(interaction_component: Node) -> void:
-	
-	print_debug(interaction_component)
-	
-	var body = interaction_component.get_parent()
-	
-	if body.is_in_group("Player") and active:
-		_show_interaction_label()	
-	pass
-
-func _on_area_exited(interaction_component: Node) -> void:
-	var body = interaction_component.get_parent()
-	if body.is_in_group("Player") and active:
-		_hide_interaction_label()
-	pass
 
 func _disable_physics() -> void:
 	pass

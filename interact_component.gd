@@ -1,12 +1,12 @@
 class_name InteractComponent
 extends Area2D
 
-#Sinais para uso futuro para animações, sons, etc...
-signal item_interaction(item: Item)
-signal item_carring(actor: CharacterBody2D)
-signal item_dropped(item: ItemInteraction)
-#signal item_found(item: ItemInteraction)
-#signal item_lost(item: ItemInteraction)
+# SINAIS DO COMPONENTE (para UI, som, etc.)
+signal item_available(item: Item)        
+signal item_unavailable()                
+signal interaction_started(item: Item)   
+signal interaction_completed(item: Item) 
+signal interaction_failed(reason: String)
 
 @export var carry_point: Marker2D
 
@@ -62,7 +62,7 @@ func try_carry(item: Item) -> bool:
 	if is_carrying:
 		return drop_item()
 	
-	if item_type != types_list.CARRY || item.item_interaction.active == false:
+	if item_type != types_list.CARRY || item.interaction_area.active == false:
 		return false
 	
 	actor = get_parent()
@@ -78,8 +78,6 @@ func try_carry(item: Item) -> bool:
 	
 	carried_item = item
 	
-	item_carring.emit(actor)
-	
 	return true
 
 
@@ -90,9 +88,6 @@ func drop_item() -> bool:
 		return false
 		
 	actor = get_parent()
-	
-	print_debug(actor.interact_component.carry_point.get_children())
-	print_debug(carried_item)
 	
 	actor.interact_component.carry_point.remove_child(carried_item)
 	
@@ -105,8 +100,6 @@ func drop_item() -> bool:
 	
 	carried_item.freeze = false
 	carried_item.collision.disabled = false
-	
-	item_dropped.emit(carried_item)
 	
 	carried_item = null
 	is_carrying = false
@@ -123,7 +116,7 @@ func _calculate_drop_position(carrier: CharacterBody2D) -> Vector2:
 func _on_item_nearby(body: Node2D) -> void:
 	var item = body.get_parent() as Item
 	
-	if not item or not item.item_interaction.active:
+	if not item or not item.interaction_area.active:
 		return
 		
 	available_item = item
@@ -139,7 +132,6 @@ func _on_item_far(body: Node2D) -> void:
 	pass
 	
 func _handle_interact(item: Item) -> bool:
-	item_interaction.emit()
 	return true
 	
 func _handle_pickup(item: Item) -> bool:

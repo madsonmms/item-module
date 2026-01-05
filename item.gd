@@ -1,9 +1,11 @@
 class_name Item
 extends Node2D
 
+signal interacted(item: Item)
+
 enum ItemType {CARRY, PICKUP, INTERACT, PROP}
 @export var item_type: ItemType = ItemType.INTERACT
-@export var item_interaction: ItemInteraction
+@export var interaction_area: InteractionArea
 @export var collision: CollisionShape2D
 
 func _ready() -> void:

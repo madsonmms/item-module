@@ -15,27 +15,27 @@ radius = 103.23759
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_vlhcn"]
 size = Vector2(82, 82)
 
-[node name="Caixa" type="RigidBody2D" node_paths=PackedStringArray("item_interaction", "collision")]
+[node name="Caixa" type="RigidBody2D" node_paths=PackedStringArray("interaction_area", "collision")]
 collision_layer = 8
 collision_mask = 0
 gravity_scale = 0.0
 script = ExtResource("1_vlhcn")
 item_type = 0
-item_interaction = NodePath("ItemInteraction")
+interaction_area = NodePath("InteractionArea")
 collision = NodePath("CollisionShape2D")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 scale = Vector2(1.28125, 1.28125)
 texture = SubResource("GradientTexture2D_m8u5f")
 
-[node name="ItemInteraction" parent="." node_paths=PackedStringArray("interaction_label") instance=ExtResource("2_xxku7")]
+[node name="InteractionArea" parent="." node_paths=PackedStringArray("interaction_label") instance=ExtResource("2_xxku7")]
 collision_layer = 4
 interaction_label = NodePath("Label")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="ItemInteraction"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="InteractionArea"]
 shape = SubResource("CircleShape2D_wt17y")
 
-[node name="Label" type="Label" parent="ItemInteraction"]
+[node name="Label" type="Label" parent="InteractionArea"]
 visible = false
 offset_left = -11.0
 offset_top = -85.0
