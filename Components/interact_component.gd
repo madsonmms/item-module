@@ -1,7 +1,7 @@
 class_name InteractComponent
 extends Area2D
 
-# SINAIS DO COMPONENTE (para UI, som, etc.)              
+# COMPONENT SIGNALS (for UI, sound, etc.)              
 signal interaction_started(item: Item)   
 signal interaction_completed(item: Item) 
 

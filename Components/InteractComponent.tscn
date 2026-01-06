@@ -2,5 +2,5 @@
 
 [ext_resource type="Script" uid="uid://c6jr2erx156a5" path="res://Components/interact_component.gd" id="1_ju87f"]
 
-[node name="CarryComponent" type="Area2D"]
+[node name="InteractComponent" type="Area2D"]
 script = ExtResource("1_ju87f")

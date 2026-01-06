@@ -7,12 +7,9 @@ enum ItemType {CARRY, PICKUP, INTERACT, PROP}
 @export var interaction_area: InteractionArea
 @export var collision: CollisionShape2D
 
-func _ready() -> void:
-	pass 
-	
+
 func get_item_type() -> ItemType:
 	return item_type
-
 
 # PUBLIC INTERFACE - For other systems #
 func notify_interaction_start(interactor: CharacterBody2D) -> void:
