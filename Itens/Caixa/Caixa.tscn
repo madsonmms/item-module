@@ -20,7 +20,6 @@ collision_layer = 8
 collision_mask = 0
 gravity_scale = 0.0
 script = ExtResource("1_vlhcn")
-item_type = 0
 interaction_area = NodePath("InteractionArea")
 collision = NodePath("CollisionShape2D")
 

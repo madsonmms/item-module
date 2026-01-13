@@ -2,8 +2,8 @@ class_name InteractComponent
 extends Area2D
 
 # COMPONENT SIGNALS (for UI, sound, etc.)              
-signal interaction_started(item: Item)   
-signal interaction_completed(item: Item) 
+signal interaction_started(item: Item)
+signal interaction_completed(item: Item)
 
 @export var carry_point: Marker2D
 
