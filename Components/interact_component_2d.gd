@@ -4,6 +4,8 @@ extends Node2D
 # COMPONENT SIGNALS (for UI, sound, etc.)              
 signal interaction_started(item: Item)
 signal interaction_completed(item: Item)
+signal item_detected(item: Item)
+signal item_lost()
 
 @export var carry_point: Marker2D
 
@@ -15,14 +17,12 @@ var carry_offset: Vector2 = Vector2(0, 0)
 var actor: CharacterBody2D
 
 var current_detector : Node = null
+var detection_enabled: bool = true
 
 func _ready() -> void:
 	
 	actor = get_parent() as CharacterBody2D
 	_setup_detector()
-	
-	#area_entered.connect(_on_item_nearby)
-	#area_exited.connect(_on_item_far)
 	
 	pass
 
@@ -48,9 +48,9 @@ func _connect_detector_signals() -> void:
 		return
 
 func _update_raycast_detection() -> void:
-	if not current_detector is RayCast2D:
-		push_warning("[InteractionComponent] Tipo de Raycast inválido. Verifique o componente")
-		pass
+	
+	if not detection_enabled or not current_detector is RayCast2D:
+		return
 	
 	var raycast = current_detector as RayCast2D
 	raycast.force_raycast_update()
@@ -59,7 +59,13 @@ func _update_raycast_detection() -> void:
 		var collider = raycast.get_collider()
 		var item = collider.get_parent() as Item
 		
-		print_debug(collider, item)
+		if item and item.is_interactable and item != available_item:
+			available_item = item
+			item_detected.emit(item)
+			
+	elif available_item:
+		available_item = null
+		item_lost.emit()
 
 # COMPONENT MAIN #
 func try_interact() -> bool:
@@ -121,6 +127,8 @@ func _carry_item(item: Item) -> bool:
 	carried_item = item
 	is_carrying = true
 	
+	detection_enabled = false
+	
 	return true
 
 
@@ -139,6 +147,8 @@ func _drop_item() -> bool:
 	
 	carried_item = null
 	is_carrying = false
+	
+	detection_enabled = true
 	
 	return true
 
