@@ -1,5 +1,5 @@
 class_name InteractionArea
-extends Area2D
+extends Node
 
 @export_group("Interaction Configuration")
 @export var interaction_label: Label # For debug and stuff
@@ -8,8 +8,8 @@ extends Area2D
 
 func _ready() -> void:
 	
-	area_entered.connect(_on_area_entered)
-	area_exited.connect(_on_area_exited)
+	#area_entered.connect(_on_area_entered)
+	#area_exited.connect(_on_area_exited)
 	
 	pass
 

@@ -3,7 +3,7 @@ extends CharacterBody2D
 
 var move_speed: float = 100.00
 
-@onready var interact_component = $InteractComponent
+@onready var interact_component = $InteractComponent2D
 
 func _process(_delta: float) -> void:
 	

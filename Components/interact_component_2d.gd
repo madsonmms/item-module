@@ -1,5 +1,5 @@
 class_name InteractComponent
-extends Area2D
+extends Node2D
 
 # COMPONENT SIGNALS (for UI, sound, etc.)              
 signal interaction_started(item: Item)
@@ -14,13 +14,52 @@ var carry_offset: Vector2 = Vector2(0, 0)
 
 var actor: CharacterBody2D
 
+var current_detector : Node = null
+
 func _ready() -> void:
 	
 	actor = get_parent() as CharacterBody2D
-	area_entered.connect(_on_item_nearby)
-	area_exited.connect(_on_item_far)
+	_setup_detector()
+	
+	#area_entered.connect(_on_item_nearby)
+	#area_exited.connect(_on_item_far)
 	
 	pass
+
+func _process(_delta: float) -> void:
+	if current_detector is RayCast2D:
+		_update_raycast_detection()
+
+func _setup_detector() -> void:
+	for child in get_children():
+		if child is Area2D or child is RayCast2D:
+			current_detector = child
+			_connect_detector_signals()
+			print_debug("Detector configurado: ", current_detector.name)
+			
+	if not current_detector:
+		push_warning("[InteractionComponent] Nenhum detector configurado ou tipo inválido, insira um detector válido! (Area2D | Raycast2D)")
+
+func _connect_detector_signals() -> void:
+	if current_detector is Area2D:
+		current_detector.body_entered.connect(_on_area_body_entered)
+		current_detector.body_exited.connect(_on_area_body_exited)
+	else:
+		return
+
+func _update_raycast_detection() -> void:
+	if not current_detector is RayCast2D:
+		push_warning("[InteractionComponent] Tipo de Raycast inválido. Verifique o componente")
+		pass
+	
+	var raycast = current_detector as RayCast2D
+	raycast.force_raycast_update()
+	
+	if raycast.is_colliding():
+		var collider = raycast.get_collider()
+		var item = collider.get_parent() as Item
+		
+		print_debug(collider, item)
 
 # COMPONENT MAIN #
 func try_interact() -> bool:
@@ -110,7 +149,7 @@ func _calculate_drop_position(carrier: CharacterBody2D) -> Vector2:
 
 
 # DETECTION #
-func _on_item_nearby(body: Node2D) -> void:
+func _on_area_body_entered(body: Node2D) -> void:
 	var item = body.get_parent() as Item
 	
 	if not item or not item.is_interactable:
@@ -118,7 +157,7 @@ func _on_item_nearby(body: Node2D) -> void:
 		
 	available_item = item
 	
-func _on_item_far(body: Node2D) -> void:
+func _on_area_body_exited(body: Node2D) -> void:
 	
 	var item = body.get_parent() as Item
 	
