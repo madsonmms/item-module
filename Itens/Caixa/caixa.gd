@@ -1,4 +1,4 @@
-extends Item
+extends Interactable
 class_name Caixa
 
 var active : bool = false
@@ -6,9 +6,20 @@ var active : bool = false
 @onready var rigid_body : RigidBody2D = $"."
 @onready var collision_shape : CollisionShape2D = $CollisionShape2D
 @onready var sprite : Sprite2D = $Sprite2D
+@onready var interaction_label: Label = $InteractionLabel
 
 func _ready() -> void:
+	
+	detection_start.connect(_on_detection_started)
+	
 	_update_visual_state()
+	
+func _on_detection_started(_detector: Node) -> void:
+	print_debug("[Caixa] Detectado por: ", _detector.name)
+	
+	if interaction_label:
+		interaction_label.text = "[E]"
+		interaction_label.visible = true
 
 func _on_interaction_started(_interactor: CharacterBody2D) -> void:
 	print_debug("Caixa: interação iniciada...")
@@ -27,6 +38,10 @@ func _on_carry_started(_carrier: CharacterBody2D) -> void:
 	if collision_shape:
 		collision_shape.disabled = true
 	
+	set_interactable(false)
+	
+	_hide_detection_feedback()
+	
 	pass
 
 func _on_drop_started(_carrier: CharacterBody2D) -> void:
@@ -37,6 +52,9 @@ func _on_drop_started(_carrier: CharacterBody2D) -> void:
 	
 	if collision_shape:
 		collision_shape.disabled = false
+	
+	interaction_active = true
+	
 
 func _update_visual_state() -> void:
 	if sprite:
