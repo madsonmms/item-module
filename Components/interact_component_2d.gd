@@ -9,13 +9,18 @@ signal interactable_lost()
 
 @export var carry_point: Marker2D
 
+# Found interactables
 var available_body: Interactable = null
+
+# Carrying
 var carried_body: Interactable = null
 var is_carrying: bool = false
 var carry_offset: Vector2 = Vector2(0, 0)
 
+# Actor
 var actor: CharacterBody2D
 
+# Detection
 var current_detector : Node = null
 var detection_enabled: bool = true
 
@@ -32,7 +37,6 @@ func _ready() -> void:
 func _process(_delta: float) -> void:
 	if current_detector is RayCast2D:
 		_update_raycast_detection()
-
 
 func _setup_detector() -> void:
 	for child in get_children():
@@ -110,9 +114,13 @@ func try_interact() -> bool:
 		_handle_carry(carried_body)
 		return false
 	
+	if current_detector is Area2D:
+		var nearest = _get_nearest_body()
+		if nearest:
+			available_body = nearest
+	
 	if not available_body:
 		return false
-	
 	
 	interaction_started.emit(available_body)
 	
@@ -124,8 +132,8 @@ func try_interact() -> bool:
 	return success
 
 
-func _handle_interact(interactable: Interactable) -> bool:
-	interactable.notify_interaction_start(actor)
+func _handle_interact(body: Interactable) -> bool:
+	body.notify_interaction_start(actor)
 	return true
 
 
@@ -137,6 +145,7 @@ func _handle_carry(body: Interactable) -> bool:
 
 
 func _handle_pickup(body: Interactable) -> bool:
+	print_debug("[InteractComponent] tentando pickup")
 	return true
 	
 #-- COMPONENT MAIN :: END --#
@@ -190,12 +199,10 @@ func _calculate_drop_position(carrier: CharacterBody2D) -> Vector2:
 func _on_area_body_entered(body: Node2D) -> void:
 	var body_detected = body as Interactable
 	
-	if not body_detected or not body_detected.interaction_active:
-		return
-		
 	available_body = body_detected
 	
 	available_body.notify_detection_start(self)
+	
 	
 func _on_area_body_exited(body: Node2D) -> void:
 	
@@ -206,7 +213,31 @@ func _on_area_body_exited(body: Node2D) -> void:
 		available_body = null
 	
 	pass
+		
 
+func _get_nearest_body() -> Node2D:
+	if current_detector is not Area2D:
+		print_debug("Detector não é area2D")
+		return
+	
+	var bodies = current_detector.get_overlapping_bodies()
+	var nearest_body: Node2D = null
+	var min_dist: float = INF
+	
+	for body in bodies:
+		
+		var interactable = body as Interactable
+		
+		if interactable and interactable.interaction_active and interactable != carried_body:
+			var dist = global_position.distance_squared_to(body.global_position)
+			
+			if dist < min_dist:
+				min_dist = dist
+				nearest_body = interactable
+				
+	return nearest_body
+
+	
 func _clear_available_body() -> void:
 	if available_body and available_body != carried_body:
 		available_body.notify_detection_end(self)

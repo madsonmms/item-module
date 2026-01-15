@@ -15,15 +15,12 @@ func _ready() -> void:
 	_update_visual_state()
 	
 func _on_detection_started(_detector: Node) -> void:
-	print_debug("[Caixa] Detectado por: ", _detector.name)
 	
 	if interaction_label:
 		interaction_label.text = "[E]"
 		interaction_label.visible = true
 
 func _on_interaction_started(_interactor: CharacterBody2D) -> void:
-	print_debug("Caixa: interação iniciada...")
-	
 	active = not active
 	
 	_update_visual_state()
