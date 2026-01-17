@@ -8,7 +8,7 @@
 size = Vector2(85, 86)
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_i3pqv"]
-radius = 133.03383
+radius = 113.28283
 
 [node name="Player" type="CharacterBody2D"]
 collision_mask = 0
@@ -21,11 +21,16 @@ texture = ExtResource("2_onrkg")
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("RectangleShape2D_i3pqv")
 
-[node name="InteractComponent2D" parent="." node_paths=PackedStringArray("carry_point") instance=ExtResource("3_kne1u")]
+[node name="InteractComponent2D" parent="." node_paths=PackedStringArray("carry_point", "detector") instance=ExtResource("3_kne1u")]
 carry_point = NodePath("CarryPoint")
+detector = NodePath("Area2D")
 
 [node name="CarryPoint" type="Marker2D" parent="InteractComponent2D"]
 position = Vector2(0, -73)
+
+[node name="RayCast2D" type="RayCast2D" parent="InteractComponent2D"]
+visible = false
+collision_mask = 4
 
 [node name="Area2D" type="Area2D" parent="InteractComponent2D"]
 collision_layer = 0
