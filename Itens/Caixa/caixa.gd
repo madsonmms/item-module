@@ -11,6 +11,7 @@ var active : bool = false
 func _ready() -> void:
 	
 	detection_start.connect(_on_detection_started)
+	detection_end.connect(_on_detection_end)
 	
 	_update_visual_state()
 	
@@ -19,6 +20,10 @@ func _on_detection_started(_detector: Node) -> void:
 	if interaction_label:
 		interaction_label.text = "[E]"
 		interaction_label.visible = true
+		
+func _on_detection_end(_detector: Node) -> void:
+		print_debug("[Caixa] detection ended")
+		_hide_detection_feedback()
 
 func _on_interaction_started(_interactor: CharacterBody2D) -> void:
 	active = not active

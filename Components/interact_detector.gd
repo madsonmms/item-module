@@ -7,6 +7,7 @@ signal interactable_lost()
 var current_detector: Node
 
 # Found interactables
+var detected_interactables: Array[Interactable] = []
 var available_body: Interactable = null
 
 func _ready() -> void:
@@ -71,20 +72,35 @@ func _connect_detector_signals() -> void:
 
 #-- DETECTION :: START --#
 func _on_area_body_entered(body: Node) -> void:
-	var body_detected = body as Interactable
+	print_debug("item found")
+	var interactable = body as Interactable
 	
-	available_body = body_detected
+	if not interactable or not interactable.interaction_active:
+		return
 	
-	available_body.notify_detection_start(self)
+	if not available_body:
+		available_body = interactable
+	
+	detected_interactables.append(interactable)
+	
+	for detected in detected_interactables:
+		detected.notify_detection_start(self)
 	
 	
 func _on_area_body_exited(body: Node) -> void:
 	
-	var body_detected = body as Interactable
+	var interactable = body as Interactable
 	
-	if body_detected and body_detected == available_body:
+	detected_interactables.erase(interactable)
+	
+	if interactable:
+		interactable.notify_detection_end(self)
+	
+	if interactable and detected_interactables == []:
 		available_body.notify_detection_end(self)
 		available_body = null
+	
+	print_debug(available_body)
 	
 	pass
 		
@@ -108,12 +124,16 @@ func _get_nearest_body() -> Node:
 			if dist < min_dist:
 				min_dist = dist
 				nearest_body = interactable
+		
 				
 	return nearest_body
 
 	
 func _clear_available_body() -> void:
-	if available_body:
-		available_body.notify_detection_end(self)
-	available_body = null
+	for interactable in detected_interactables:
+		interactable.notify_detection_end(self)
+		
+	detected_interactables.clear()
+	interactable_lost.emit()
+		
 #-- DETECTION :: END --#

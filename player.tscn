@@ -22,6 +22,7 @@ texture = ExtResource("2_onrkg")
 shape = SubResource("RectangleShape2D_i3pqv")
 
 [node name="InteractComponent2D" parent="." node_paths=PackedStringArray("carry_point", "detector") instance=ExtResource("3_kne1u")]
+position = Vector2(1, 0)
 carry_point = NodePath("CarryPoint")
 detector = NodePath("Area2D")
 
@@ -29,7 +30,7 @@ detector = NodePath("Area2D")
 position = Vector2(0, -73)
 
 [node name="RayCast2D" type="RayCast2D" parent="InteractComponent2D"]
-visible = false
+target_position = Vector2(0, 88)
 collision_mask = 4
 
 [node name="Area2D" type="Area2D" parent="InteractComponent2D"]

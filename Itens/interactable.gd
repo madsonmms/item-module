@@ -30,7 +30,7 @@ func notify_detection_start(detector: Node) -> void:
 	_show_detection_feedback(detector)
 
 func notify_detection_end(detector: Node) -> void:
-	if not is_being_detected or current_detector != detector:
+	if not is_being_detected:
 		return
 	
 	is_being_detected = false

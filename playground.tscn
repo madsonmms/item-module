@@ -9,11 +9,17 @@
 position = Vector2(396, 203)
 collision_mask = 12
 
-[node name="Caixa2" parent="." groups=["Interactables"] instance=ExtResource("2_wt17y")]
-position = Vector2(657, 392)
+[node name="Caixa3" parent="." groups=["Interactables"] instance=ExtResource("2_wt17y")]
+position = Vector2(758, 381)
 collision_layer = 4
+interactable_type = 0
+
+[node name="Caixa2" parent="." groups=["Interactables"] instance=ExtResource("2_wt17y")]
+position = Vector2(644, 383)
+collision_layer = 4
+interactable_type = 0
 
 [node name="Caixa" parent="." groups=["Interactables"] instance=ExtResource("2_wt17y")]
-position = Vector2(541, 388)
+position = Vector2(528, 381)
 collision_layer = 4
 interactable_type = 0
