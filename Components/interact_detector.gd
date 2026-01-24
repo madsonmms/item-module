@@ -10,10 +10,6 @@ var current_detector: Node
 var detected_interactables: Array[Interactable] = []
 var available_body: Interactable = null
 
-func _ready() -> void:
-	
-	pass
-
 func get_detector_type() -> Node2D:
 	return null
 
@@ -72,7 +68,6 @@ func _connect_detector_signals() -> void:
 
 #-- DETECTION :: START --#
 func _on_area_body_entered(body: Node) -> void:
-	print_debug("item found")
 	var interactable = body as Interactable
 	
 	if not interactable or not interactable.interaction_active:
@@ -83,9 +78,6 @@ func _on_area_body_entered(body: Node) -> void:
 	
 	detected_interactables.append(interactable)
 	
-	for detected in detected_interactables:
-		detected.notify_detection_start(self)
-	
 	
 func _on_area_body_exited(body: Node) -> void:
 	
@@ -93,17 +85,11 @@ func _on_area_body_exited(body: Node) -> void:
 	
 	detected_interactables.erase(interactable)
 	
-	if interactable:
-		interactable.notify_detection_end(self)
-	
 	if interactable and detected_interactables == []:
 		available_body.notify_detection_end(self)
 		available_body = null
 	
-	print_debug(available_body)
 	
-	pass
-		
 
 func _get_nearest_body() -> Node:
 	if current_detector is not Area2D:
