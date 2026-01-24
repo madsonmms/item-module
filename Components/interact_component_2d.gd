@@ -24,8 +24,6 @@ var actor: CharacterBody2D
 # Detection
 var current_detector : Node = null
 var detection: InteractDetector = InteractDetector.new()
-var nearest: Interactable
-var last_nearest: Interactable = null
 
 
 #-- COMPONENT SETUP :: START --#
@@ -42,12 +40,7 @@ func _process(_delta: float) -> void:
 	if current_detector is RayCast2D:
 		available_body = detection.update_raycast_detector(carried_body)
 	if current_detector is Area2D:
-		nearest = detection._get_nearest_body()
-		if last_nearest and last_nearest != nearest:
-			last_nearest.notify_detection_end(self)
-		if nearest:
-			nearest.notify_detection_start(self)
-			last_nearest = nearest
+		detection.update_area_detector()
 		
 			
 
@@ -59,7 +52,7 @@ func try_interact() -> bool:
 		return false
 	
 	if current_detector is Area2D:
-		var nearest = detection._get_nearest_body()
+		var nearest = detection.get_nearest_body()
 		
 		if nearest:
 			available_body = nearest

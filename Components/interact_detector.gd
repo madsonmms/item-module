@@ -9,6 +9,8 @@ var current_detector: Node
 # Found interactables
 var detected_interactables: Array[Interactable] = []
 var available_body: Interactable = null
+var nearest: Interactable
+var last_nearest: Interactable = null
 
 func get_detector_type() -> Node2D:
 	return null
@@ -91,7 +93,7 @@ func _on_area_body_exited(body: Node) -> void:
 	
 	
 
-func _get_nearest_body() -> Node:
+func get_nearest_body() -> Node:
 	if current_detector is not Area2D:
 		print_debug("Detector não é area2D")
 		return
@@ -114,6 +116,14 @@ func _get_nearest_body() -> Node:
 				
 	return nearest_body
 
+func update_area_detector() -> void:
+	nearest = get_nearest_body()
+	if last_nearest and last_nearest != nearest:
+		last_nearest.notify_detection_end(self)
+	if nearest:
+		nearest.notify_detection_start(self)
+		last_nearest = nearest
+	
 	
 func _clear_available_body() -> void:
 	for interactable in detected_interactables:
