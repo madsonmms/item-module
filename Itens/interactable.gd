@@ -20,10 +20,16 @@ func get_interactable_type() -> InteractableType:
 
 #-- ABSTRACTS :: START --#
 @abstract
-func on_detection_start(_detector: Node) -> void
+func _on_detection_start(_detector: Node) -> void
 
 @abstract
-func on_detection_end(_detector: Node) -> void
+func _on_detection_end(_detector: Node) -> void
+
+@abstract
+func _show_detection_feedback(_detector: Node) -> void
+
+@abstract 
+func _hide_detection_feedback() -> void
 #-- ABSTRACTS :: END --#
 
 #-- DETECTION INTERFACE :: START --#
@@ -36,7 +42,6 @@ func notify_detection_start(detector: Node) -> void:
 	current_detector = detector
 	detection_start.emit(detector)
 	
-	_show_detection_feedback(detector)
 
 func notify_detection_end(detector: Node) -> void:
 	if not is_being_detected:
@@ -46,22 +51,6 @@ func notify_detection_end(detector: Node) -> void:
 	current_detector = null
 	detection_end.emit(detector)
 	
-	_hide_detection_feedback()
-
-# DETECTION FEEDBACK #
-func _show_detection_feedback(_detector: Node) -> void:
-	
-	var label = get_node_or_null("InteractionLabel")
-	if label:
-		label.visible = true
-
-
-func _hide_detection_feedback() -> void:
-	
-	var label = get_node_or_null("InteractionLabel")
-	if label:
-		label.visible = false
-		
 #-- DETECTION INTERFACE :: END --#
 	
 # PUBLIC INTERFACE - For other systems #
