@@ -1,3 +1,4 @@
+@abstract
 class_name Interactable
 extends Node2D
 
@@ -16,6 +17,14 @@ var current_detector: Node = null
 func get_interactable_type() -> InteractableType:
 	return interactable_type
 #-- GETTERS :: END --#
+
+#-- ABSTRACTS :: START --#
+@abstract
+func on_detection_start(_detector: Node) -> void
+
+@abstract
+func on_detection_end(_detector: Node) -> void
+#-- ABSTRACTS :: END --#
 
 #-- DETECTION INTERFACE :: START --#
 func notify_detection_start(detector: Node) -> void:
@@ -52,9 +61,9 @@ func _hide_detection_feedback() -> void:
 	var label = get_node_or_null("InteractionLabel")
 	if label:
 		label.visible = false
-
+		
 #-- DETECTION INTERFACE :: END --#
-
+	
 # PUBLIC INTERFACE - For other systems #
 func notify_interaction_start(interactor: CharacterBody2D) -> void:
 	_on_interaction_started(interactor)
@@ -64,13 +73,13 @@ func notify_carry_start(carrier: CharacterBody2D) -> void:
 
 func notify_drop_start(carrier: CharacterBody2D) -> void:
 	_on_drop_started(carrier)
-
-
-
 # VIRTUAL METHODS - For specific items use #
+
+#TYPE: INTERACT#
 func _on_interaction_started(_interactor: CharacterBody2D) -> void:
 	push_warning("_on_interaction_started() não implementado em: ", name)
 
+#TYPE: CARRY#
 func _on_carry_started(_carrier: CharacterBody2D) -> void:
 	push_warning("_on_carry_started() não implementado em: ", name)
 	
